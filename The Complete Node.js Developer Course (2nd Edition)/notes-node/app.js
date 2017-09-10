@@ -5,8 +5,11 @@ const os = require('os');
 const _ = require('lodash');
 const notes = require('./notes.js');
 
-var res = notes.add(9, -2);
-console.log(res);
+console.log(_.isString(true));
+console.log(_.isString('hello'));
+
+// var res = notes.add(9, -2);
+// console.log(res);
 
 // var user = os.userInfo();
 //
