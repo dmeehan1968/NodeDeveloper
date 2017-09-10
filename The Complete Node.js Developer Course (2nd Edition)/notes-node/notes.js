@@ -5,6 +5,11 @@ var addNote = (title, body) => {
   return 'new note';
 }
 
+var getAll = () => {
+  console.log('Getting all notes');
+}
+
 module.exports = {
-  addNote
+  addNote,
+  getAll
 }
