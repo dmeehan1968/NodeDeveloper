@@ -5,7 +5,7 @@ const fs = require('fs');
 var addNote = (title, body) => {
   console.log('Adding a new Note with title="',title, '", body="',body, '"');
 
-  var notes = [];
+  var notes = getAll();
 
   var note = {
     title,
@@ -21,6 +21,8 @@ var addNote = (title, body) => {
 
 var getAll = () => {
   console.log('Getting all notes');
+
+  return JSON.parse(fs.readFileSync('notes-data.json'));
 }
 
 var getNote = (title) => {
