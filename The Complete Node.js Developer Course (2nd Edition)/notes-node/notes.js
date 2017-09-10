@@ -9,7 +9,12 @@ var getAll = () => {
   console.log('Getting all notes');
 }
 
+var get = (title) => {
+  console.log('Getting note', title);
+}
+
 module.exports = {
   addNote,
-  getAll
+  getAll,
+  get
 }
