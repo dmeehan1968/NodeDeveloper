@@ -3,7 +3,6 @@ console.log('Starting notes.js');
 const fs = require('fs');
 
 var addNote = (title, body) => {
-  console.log('Adding a new Note with title="',title, '", body="',body, '"');
 
   var notes = getAll();
 
@@ -12,9 +11,19 @@ var addNote = (title, body) => {
     body
   };
 
-  notes.push(note);
+  var duplicateNotes = notes.filter((note) => note.title === title);
 
-  fs.writeFileSync('notes-data.json', JSON.stringify(notes));
+  if (duplicateNotes.length === 0) {
+
+    console.log('Adding a new Note with title="',title, '", body="',body, '"');
+
+    notes.push(note);
+
+    fs.writeFileSync('notes-data.json', JSON.stringify(notes));
+
+  } else {
+    console.log('Duplicate note title');
+  }
 
   return note;
 }
