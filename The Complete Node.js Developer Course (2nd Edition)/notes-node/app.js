@@ -17,9 +17,7 @@ if (command === 'add') {
   var note = notes.addNote(argv.title, argv.body);
   if (note !== undefined) {
     console.log('Note Created');
-    console.log('--');
-    console.log(`Title: ${note.title}`);
-    console.log(`Body: ${note.body}`);
+    notes.logNote(note);
   } else {
     console.log('Duplicate note');
   }
@@ -31,9 +29,7 @@ if (command === 'add') {
   var note = fetchedNotes[0];
   if (note !== undefined) {
     console.log('Note Read');
-    console.log('--');
-    console.log(`Title: ${note.title}`);
-    console.log(`Body: ${note.body}`);
+    notes.logNote(note);
   } else {
     console.log('Note not found');
   }
