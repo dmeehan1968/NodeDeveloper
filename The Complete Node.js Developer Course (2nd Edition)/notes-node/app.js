@@ -14,7 +14,12 @@ var command = argv._[0];
 console.log('Command: ', command);
 
 if (command === 'add') {
-  notes.addNote(argv.title, argv.body);
+  var note = notes.addNote(argv.title, argv.body);
+  if (note !== undefined) {
+    console.log('Added:', note.title);
+  } else {
+    console.log('Duplicate note');
+  }
 } else if (command === 'list') {
   notes.getAll();
 } else if (command === 'read') {

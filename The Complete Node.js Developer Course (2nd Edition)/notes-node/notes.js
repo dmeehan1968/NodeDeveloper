@@ -34,37 +34,32 @@ var addNote = (title, body) => {
 
   if (duplicateNotes.length === 0) {
 
-    console.log('Adding a new Note with title="',title, '", body="',body, '"');
-
     notes.push(note);
-
     saveNotes(notes);
+    return note;
 
-  } else {
-    console.log('Duplicate note title');
   }
 
-  return note;
-}
+};
 
 var getAll = () => {
   console.log('Getting all notes');
 
   return fetchNotes();
 
-}
+};
 
 var getNote = (title) => {
   console.log('Getting note', title);
-}
+};
 
 var removeNote = (title) => {
   console.log('Removing note', title);
-}
+};
 
 module.exports = {
   addNote,
   getAll,
   getNote,
   removeNote
-}
+};
