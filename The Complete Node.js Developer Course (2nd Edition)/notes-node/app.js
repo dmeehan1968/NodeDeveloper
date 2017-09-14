@@ -16,7 +16,10 @@ console.log('Command: ', command);
 if (command === 'add') {
   var note = notes.addNote(argv.title, argv.body);
   if (note !== undefined) {
-    console.log('Added:', note.title);
+    console.log('Note Created');
+    console.log('--');
+    console.log(`Title: ${note.title}`);
+    console.log(`Body: ${note.body}`);
   } else {
     console.log('Duplicate note');
   }
