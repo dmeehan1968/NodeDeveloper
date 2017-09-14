@@ -22,7 +22,14 @@ var addNote = (title, body) => {
 var getAll = () => {
   console.log('Getting all notes');
 
-  return JSON.parse(fs.readFileSync('notes-data.json'));
+  try {
+
+    return JSON.parse(fs.readFileSync('notes-data.json'));
+
+  } catch(e) {
+
+    return [];
+  }
 }
 
 var getNote = (title) => {
