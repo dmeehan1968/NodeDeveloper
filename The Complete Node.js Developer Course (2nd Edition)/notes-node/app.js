@@ -19,6 +19,21 @@ var argv = yargs
       alias: 'b'
     }
   })
+  .command('list', 'List all notes')
+  .command('read', 'Display an existing note', {
+    title: {
+      describe: 'Title of note',
+      demand: true,
+      alias: 't'
+    }
+  })
+  .command('remove', 'Remove a note', {
+    title: {
+      describe: 'Title of existing note',
+      demand: true,
+      alias: 't'
+    }
+  })
   .help()
   .argv;
 
