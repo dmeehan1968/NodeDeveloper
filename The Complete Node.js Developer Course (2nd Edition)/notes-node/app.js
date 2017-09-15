@@ -22,7 +22,11 @@ if (command === 'add') {
     console.log('Duplicate note');
   }
 } else if (command === 'list') {
-  notes.getAll();
+  var allNotes = notes.getAll();
+  console.log(`Printing ${allNotes.length} notes:`);
+  allNotes.forEach((note) => {
+    notes.logNote(note);
+  });
 } else if (command === 'read') {
 
   var fetchedNotes = notes.getNote(argv.title);
