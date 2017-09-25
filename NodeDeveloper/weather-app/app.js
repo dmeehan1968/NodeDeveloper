@@ -32,9 +32,9 @@ request({
   url: "https://api.darksky.net/forecast/fff633074dbbabd4169bf2f892f54346/51.0371175,-2.826742",
   json: true
 }, (error, response, body) => {
-    if (error) {
-      console.log(error);
-    } else {
+    if (!error && response.statusCode === 200) {
       console.log(body.currently.temperature);
+    } else {
+      console.log('Unable to fetch weather');
     }
 });
