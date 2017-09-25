@@ -20,11 +20,12 @@ geocode.geocodeAddress(argv.address, (errorMessage, results) => {
   if (errorMessage) {
     console.log(errorMessage);
   } else {
+    console.log(results.address);
     weather.getWeather(results.lat, results.lng, (errorMessage, weatherResults) => {
       if (errorMessage) {
         console.log(errorMessage);
       } else {
-        console.log(`At "${results.address}", its currently ${weatherResults.temperature}.  It feels like ${weatherResults.apparentTemperature}`);
+        console.log(`Its currently ${weatherResults.temperature}.  It feels like ${weatherResults.apparentTemperature}`);
       }
     });
   }
