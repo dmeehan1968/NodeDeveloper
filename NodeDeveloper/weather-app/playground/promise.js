@@ -12,6 +12,11 @@ var asyncAdd = (a, b) => {
 
 asyncAdd(5, 7). then((result) => {
   console.log('Result:',result);
+  return asyncAdd(result, 33);
+}, (errorMessage) => {
+  console.log(errorMessage);
+}).then((result) => {
+  console.log('Should be 45:',result);
 }, (errorMessage) => {
   console.log(errorMessage);
 });
