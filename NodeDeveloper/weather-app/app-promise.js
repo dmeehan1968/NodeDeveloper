@@ -35,8 +35,9 @@ axios.get(geocodeUrl).then((response) => {
 
   var temperature = response.data.currently.temperature;
   var apparentTemperature = response.data.currently.apparentTemperature;
+  var summary = response.data.currently.summary;
 
-  console.log(`It's currently ${temperature}.  It feels like ${apparentTemperature}`);
+  console.log(`It's currently ${temperature}.  It feels like ${apparentTemperature} and its ${summary}`);
 
 }).catch((e) => {
   if (e.code === 'ENOTFOUND') {
