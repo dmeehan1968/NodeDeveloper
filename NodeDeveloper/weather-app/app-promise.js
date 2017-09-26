@@ -1,18 +1,50 @@
 const yargs = require('yargs');
 const axios = require('axios');
+const fs = require('fs');
+
+const dataStore = 'app-promise.json';
 
 const argv = yargs
   .options({
     a: {
-      demand: true,
+      demand: false,
       alias: 'address',
       describe: 'Address to fetch weather for',
       string: true
+    },
+    s: {
+      demand: false,
+      alias: 'save',
+      describe: 'Address to save as default',
     }
   })
   .help()
   .alias('help', 'h')
   .argv;
+
+console.log(JSON.stringify(argv, undefined, 2));
+
+if (argv.save) {
+
+  if (!argv.address) {
+    console.log('Address must be specified with the --save option');
+    return 0;
+  }
+
+  fs.writeFileSync(dataStore, JSON.stringify(argv.address));
+
+  console.log('Address Saved');
+  return 0;
+
+} else {
+
+  if (!argv.address) {
+
+    argv.address = JSON.parse(fs.readFileSync(dataStore));
+
+    console.log(`Using default address: ${argv.address}`);
+  }
+}
 
 var encodedAddress = encodeURIComponent(argv.address);
 
