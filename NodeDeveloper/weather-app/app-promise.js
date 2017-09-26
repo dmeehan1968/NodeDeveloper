@@ -22,8 +22,6 @@ const argv = yargs
   .alias('help', 'h')
   .argv;
 
-console.log(JSON.stringify(argv, undefined, 2));
-
 if (argv.save) {
 
   if (!argv.address) {
@@ -40,9 +38,21 @@ if (argv.save) {
 
   if (!argv.address) {
 
-    argv.address = JSON.parse(fs.readFileSync(dataStore));
+    try {
 
-    console.log(`Using default address: ${argv.address}`);
+      argv.address = JSON.parse(fs.readFileSync(dataStore));
+
+      console.log(`Using default address: ${argv.address}`);
+
+    } catch (e) {
+      if (e.code === 'ENOENT') {
+        console.log('No default address has been saved');
+        return 0;
+      }
+      console.log(e);
+      return 0;
+    }
+
   }
 }
 
