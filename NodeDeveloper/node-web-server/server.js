@@ -4,8 +4,20 @@ var app = express();
 
 app.get('/', (req, res) => {
 
-  res.send('<h1>Hello Express!</h1>');
+  // res.send('<h1>Hello Express!</h1>');
 
+  res.send({
+    name: 'Dave',
+    likes: [ 'hiking', 'coast', 'hills']
+  });
+
+});
+
+
+app.get('/about', (req, res) => {
+
+    res.send('About page');
+    
 });
 
 app.listen(3000);
