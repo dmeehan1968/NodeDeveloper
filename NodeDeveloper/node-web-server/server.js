@@ -8,6 +8,13 @@ app.set('view engine', 'hbs');
 
 app.use(express.static(__dirname + '/public'));
 
+app.use((req, res, next) => {
+
+  next();
+  
+});
+
+
 hbs.registerHelper('getCurrentYear', () => {
 
   return new Date().getFullYear();
@@ -17,7 +24,7 @@ hbs.registerHelper('getCurrentYear', () => {
 hbs.registerHelper('screamIt', (text) => {
 
     return text.toUpperCase();
-    
+
 });
 
 app.get('/', (req, res) => {
