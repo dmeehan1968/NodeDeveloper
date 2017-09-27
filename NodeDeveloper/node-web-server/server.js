@@ -23,9 +23,9 @@ app.get('/about', (req, res) => {
 app.get('/bad', (req, res) => {
 
   res.send({
-    errorMessage: 'Bad request'
+    errorMessage: 'Unable to handle request'
   });
-  
+
 });
 
 app.listen(3000);
