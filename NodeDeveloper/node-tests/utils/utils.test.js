@@ -21,6 +21,17 @@ it('should square a number', () => {
   expect(result).toBe(64).toBeA('number');
 });
 
+it('should async square a number', (done) => {
+
+    utils.asyncSquare(3, (square) => {
+
+        expect(square).toBe(9).toBeA('number');
+        done();
+        
+    });
+
+});
+
 // it('should expect some values', () => {
 //
 //   // expect({ name: 'Andrew' }).toEqual({ name: 'Andrew' });
