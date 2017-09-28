@@ -9,6 +9,17 @@ app.get('/', (req, res) => {
   });
 });
 
+app.get('/users', (req, res) => {
+
+    res.send([
+
+        { name: 'Dave', age: 49 },
+        { name: 'Andrew', age: 24 }
+
+    ]);
+
+});
+
 app.listen(3000);
 
 module.exports.app = app;

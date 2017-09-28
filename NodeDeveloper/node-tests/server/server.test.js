@@ -17,3 +17,17 @@ it('should return error page', (done) => {
     .end(done);
 
 });
+
+it('should return users', (done) => {
+
+  request(app)
+    .get('/users')
+    .expect(200)
+    .expect((res) => {
+      expect(res.body)
+        .toBeA('array')
+        .toInclude({ name: 'Dave', age: 49 });
+    })
+    .end(done);
+
+});
