@@ -1,13 +1,18 @@
 const request = require('supertest');
+const expect = require('expect');
+
 const app = require('./server').app;
 
-it('should return Hello World response', (done) => {
+it('should return error page', (done) => {
 
   request(app)
     .get('/')
     .expect(404)
-    .expect({
-      error: 'Page not found.'
+    .expect((res) => {
+      expect(res.body).toInclude({
+        error: 'Page not found.',
+        name: 'Todo App v1.0'
+      });
     })
     .end(done);
 
