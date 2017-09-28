@@ -5,7 +5,10 @@ it('should return Hello World response', (done) => {
 
   request(app)
     .get('/')
-    .expect('Hello World')
+    .expect(404)
+    .expect({
+      error: 'Page not found.'
+    })
     .end(done);
 
 });
