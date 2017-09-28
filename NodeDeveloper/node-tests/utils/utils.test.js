@@ -3,9 +3,13 @@ const utils = require('./utils');
 
 describe('Utils', () => {
 
-  it('should add two numbers', () => {
-    var result = utils.add(33,11);
-    expect(result).toBe(44).toBeA('number');
+  describe('#add', () => {
+
+    it('should add two numbers', () => {
+      var result = utils.add(33,11);
+      expect(result).toBe(44).toBeA('number');
+    });
+
   });
 
   it('should async add two numbers', (done) => {
