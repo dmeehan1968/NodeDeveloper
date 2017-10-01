@@ -1,9 +1,8 @@
-const MongoClient = require('mongodb').MongoClient;
+const { MongoClient, ObjectID } = require('mongodb');
 
-const user = { name: 'Andrew', age: 25 };
-var {name} = user;
+var obj = new ObjectID();
 
-console.log(name);
+console.log(obj);
 
 MongoClient.connect('mongodb://localhost:27017/TodoApp', (err, db) => {
   if (err) {
