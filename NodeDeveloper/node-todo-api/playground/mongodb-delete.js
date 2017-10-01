@@ -13,13 +13,14 @@ MongoClient.connect('mongodb://localhost:27017/TodoApp', (err, db) => {
   // });
 
   // deleteOne
-  db.collection('Todos').deleteOne({ text: 'eat lunch' }).then((result) => {
-    console.log(result);
-  });
-
+  // db.collection('Todos').deleteOne({ text: 'eat lunch' }).then((result) => {
+  //   console.log(result);
+  // });
 
   // findOneAndDelete
-
+  db.collection('Todos').findOneAndDelete({ completed: false }).then((result) => {
+      console.log(result);
+  });
 
   // db.close();
 
