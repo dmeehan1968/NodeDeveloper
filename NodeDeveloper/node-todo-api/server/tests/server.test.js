@@ -144,5 +144,41 @@ describe('POST /todos', () => {
 
   });
 
+  describe('DELETE /todos/:id', () => {
+
+      it('should delete existing todo', (done) => {
+
+        var expected = testTodos[0];
+
+        request(app)
+          .delete(`/todos/${expected._id.toHexString()}`)
+          .expect(200)
+          .expect((res) => {
+
+            expect(res.body.todo).toBeA('object');
+            expect(res.body.todo.text).toBe(expected.text);
+
+          })
+          .end(done);
+      });
+
+      it('should return 404 if todo not found', (done) => {
+
+        request(app)
+          .delete(`/todos/${new ObjectID().toHexString()}`)
+          .expect(404)
+          .end(done);
+
+      });
+
+      it('should return 400 if todo id not valid', (done) => {
+
+        request(app)
+          .delete('/todos/123')
+          .expect(400)
+          .end(done);
+
+      });
+  });
 
 });
