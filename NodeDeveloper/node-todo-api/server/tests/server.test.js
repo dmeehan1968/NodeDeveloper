@@ -247,14 +247,14 @@ describe('POST /todos', () => {
           expect(todo).toBeA('object');
           expect(todo.text).toBe(expected.text);
           expect(todo.completed).toBe(expected.completed);
-          expect(todo.completedAt).toBe(null);
+          expect(todo.completedAt).toNotExist();
 
           Todo.findById(expected._id).then((doc) =>{
 
             expect(doc).toExist();
             expect(doc.text).toBe(expected.text);
             expect(doc.completed).toBe(expected.completed);
-            expect(doc.completedAt).toBe(null);
+            expect(doc.completedAt).toNotExist();
 
           }).catch(done);
 
