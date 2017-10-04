@@ -228,7 +228,39 @@ describe('POST /todos', () => {
 
     });
 
-    it.skip('should clear completedAt when not completed', (done) => {
+    it('should clear completedAt when not completed', (done) => {
+
+      var expected = testTodos[1];
+
+      expected.completed = false;
+
+      var updates = _.pick(expected, [ 'completed' ]);
+
+      request(app)
+        .patch(`/todos/${expected._id}`)
+        .send(updates)
+        .expect(200)
+        .expect((res) => {
+
+          var todo = res.body.todo;
+
+          expect(todo).toBeA('object');
+          expect(todo.text).toBe(expected.text);
+          expect(todo.completed).toBe(expected.completed);
+          expect(todo.completedAt).toBe(null);
+
+          Todo.findById(expected._id).then((doc) =>{
+
+            expect(doc).toExist();
+            expect(doc.text).toBe(expected.text);
+            expect(doc.completed).toBe(expected.completed);
+            expect(doc.completedAt).toBe(null);
+
+          }).catch(done);
+
+        })
+        .end(done);
+
 
     });
 
