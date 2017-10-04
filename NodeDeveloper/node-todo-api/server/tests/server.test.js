@@ -1,6 +1,7 @@
 const expect = require('expect');
 const request = require('supertest');
 const { ObjectID } = require('mongodb');
+const _ = require('lodash');
 
 var { app } = require('../server');
 var { Todo } = require('../models/todo');
@@ -12,7 +13,9 @@ const testTodos = [
     },
     {
       _id: new ObjectID(),
-      text: 'Second test todo'
+      text: 'Second test todo',
+      completed: true,
+      completedAt: 333
     }
 ];
 
@@ -186,5 +189,50 @@ describe('POST /todos', () => {
 
       });
   });
+
+  describe('PATCH /todos/:id', () => {
+
+    it('should update the todo', (done) => {
+
+      var expected = testTodos[0];
+
+      expected.text = "Updated text";
+      expected.completed = true;
+
+      var updates = _.pick(expected, [ 'text', 'completed' ]);
+
+      request(app)
+        .patch(`/todos/${expected._id}`)
+        .send(updates)
+        .expect(200)
+        .expect((res) => {
+
+          var todo = res.body.todo;
+
+          expect(todo).toBeA('object');
+          expect(todo.text).toBe(expected.text);
+          expect(todo.completed).toBe(expected.completed);
+          expect(todo.completedAt).toBeA('number');
+
+          Todo.findById(expected._id).then((doc) =>{
+
+            expect(doc).toExist();
+            expect(doc.text).toBe(expected.text);
+            expect(doc.completed).toBe(expected.completed);
+            expect(doc.completedAt).toBeA('number').toBe(todo.completedAt);
+
+          }).catch(done);
+
+        })
+        .end(done);
+
+    });
+
+    it.skip('should clear completedAt when not completed', (done) => {
+
+    });
+
+  });
+
 
 });
