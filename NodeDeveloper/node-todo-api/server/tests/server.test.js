@@ -4,9 +4,22 @@ const request = require('supertest');
 var { app } = require('../server');
 var { Todo } = require('../models/todo');
 
+const todos = [
+    {
+      text: 'First test todo'
+    },
+    {
+      text: 'Second test todo'
+    }
+];
+
 beforeEach((done) => {
 
-  Todo.remove({}).then(() => done());
+  Todo.remove({}).then(() => {
+
+    return Todo.insertMany(todos);
+
+  }).then(() => done());
 
 });
 
