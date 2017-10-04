@@ -158,6 +158,12 @@ describe('POST /todos', () => {
             expect(res.body.todo).toBeA('object');
             expect(res.body.todo.text).toBe(expected.text);
 
+            Todo.findById(expected._id.toHexString()).then((todo) =>{
+
+              expect(todo).toNotExist();
+
+            }).catch(done);
+
           })
           .end(done);
       });
