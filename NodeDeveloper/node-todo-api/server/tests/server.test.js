@@ -113,7 +113,7 @@ describe('POST /todos', () => {
         var expected = testTodos[0];
 
         request(app)
-          .get(`/todos/${expected._id.toHexString()}`)
+          .get(`/todos/${expected._id}`)
           .expect(200)
           .expect((res) => {
 
@@ -127,7 +127,7 @@ describe('POST /todos', () => {
     it('should return 404 if todo not found', (done) => {
 
       request(app)
-        .get(`/todos/${new ObjectID().toHexString()}`)
+        .get(`/todos/${new ObjectID()}`)
         .expect(404)
         .end(done);
 
@@ -151,14 +151,14 @@ describe('POST /todos', () => {
         var expected = testTodos[0];
 
         request(app)
-          .delete(`/todos/${expected._id.toHexString()}`)
+          .delete(`/todos/${expected._id}`)
           .expect(200)
           .expect((res) => {
 
             expect(res.body.todo).toBeA('object');
             expect(res.body.todo.text).toBe(expected.text);
 
-            Todo.findById(expected._id.toHexString()).then((todo) =>{
+            Todo.findById(expected._id).then((todo) =>{
 
               expect(todo).toNotExist();
 
@@ -171,7 +171,7 @@ describe('POST /todos', () => {
       it('should return 404 if todo not found', (done) => {
 
         request(app)
-          .delete(`/todos/${new ObjectID().toHexString()}`)
+          .delete(`/todos/${new ObjectID()}`)
           .expect(404)
           .end(done);
 
