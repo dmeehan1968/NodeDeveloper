@@ -1,13 +1,15 @@
+var express = require('express');
+var bodyParser = require('body-parser');
+
 var { mongoose } = require('./db/mongoose');
 var { Todo } = require('./models/Todo');
 var { User } = require('./models/User');
 
-var user = new User({
-  email: 'user@example.com'
-});
+var app = express();
+var port = process.env.PORT || 3000;
 
-user.save().then((doc) => {
-  console.log('User saved', doc);
-}, (e) => {
-  console.log('Unable to save user', e);
+app.listen(port, () => {
+
+  console.log(`Started on ${port}`);
+
 });
