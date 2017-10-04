@@ -121,14 +121,25 @@ describe('POST /todos', () => {
             expect(res.body.todo.text).toBe(expected.text);
 
           })
-          .end((err, res) => {
-            if (err) {
-              return done(err);
-            }
+          .end(done);
+    });
 
-            done();
+    it('should return 404 if todo not found', (done) => {
 
-          });
+      request(app)
+        .get(`/todos/${new ObjectID().toHexString()}`)
+        .expect(404)
+        .end(done);
+
+    });
+
+    it('should return 400 if todo id not valid', (done) => {
+
+      request(app)
+        .get('/todos/123')
+        .expect(400)
+        .end(done);
+
     });
 
   });
