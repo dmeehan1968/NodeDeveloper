@@ -5,27 +5,39 @@ const _ = require('lodash');
 
 var { app } = require('../server');
 var { Todo } = require('../models/todo');
+var { User } = require('../models/user');
 
 const testTodos = [
-    {
-      _id: new ObjectID(),
-      text: 'First test todo'
-    },
-    {
-      _id: new ObjectID(),
-      text: 'Second test todo',
-      completed: true,
-      completedAt: 333
-    }
+  {
+    _id: new ObjectID(),
+    text: 'First test todo'
+  },
+  {
+    _id: new ObjectID(),
+    text: 'Second test todo',
+    completed: true,
+    completedAt: 333
+  }
+];
+
+const testUsers = [
+  {
+    email: 'dave@example.com',
+    password: 'password'
+  },
+  {
+    email: 'andrew@example.com',
+    password: 'password'
+  }
 ];
 
 beforeEach((done) => {
 
-  Todo.remove({}).then(() => {
-
-    return Todo.insertMany(testTodos);
-
-  }).then(() => done());
+  Todo.remove({})
+    .then(() => Todo.insertMany(testTodos))
+    .then(() => User.remove({}))
+    .then(() => User.insertMany(testUsers))
+    .then(() => done());
 
 });
 
@@ -266,5 +278,66 @@ describe('POST /todos', () => {
 
   });
 
+});
+
+describe('POST /users', () => {
+
+  it('should create a new user', (done) => {
+
+    var newUser = {
+      email: 'newuser@example.com',
+      password: 'password'
+    };
+
+    request(app)
+      .post('/users')
+      .send(newUser)
+      .expect(200)
+      .expect((res) => {
+        expect(res.body.email).toBe(newUser.email);
+      })
+      .end((err, res) => {
+        if (err) {
+          return done(err);
+        }
+
+        User.find().then((users) => {
+
+            expect(users.length).toBe(testUsers.length + 1);
+            done();
+
+        }).catch(done);
+
+      });
+
+  });
+
+  it('should fail with 400 if invalid email address', (done) => {
+
+    request(app)
+      .post('/users')
+      .send({ email: 'garbage', password: 'password' })
+      .expect(400)
+      .expect((res) => {
+        expect(res.body.name).toBe('ValidationError');
+        expect(res.body.errors).toIncludeKey('email')
+      })
+      .end(done);
+
+  });
+
+  it('should fail with 400 if password too short', (done) => {
+
+    request(app)
+      .post('/users')
+      .send({ email: 'newuser@example.com', password: 'pass' })
+      .expect(400)
+      .expect((res) => {
+        expect(res.body.name).toBe('ValidationError');
+        expect(res.body.errors).toIncludeKey('password')
+      })
+      .end(done);
+
+  });
 
 });
