@@ -294,6 +294,8 @@ describe('POST /users', () => {
       .send(newUser)
       .expect(200)
       .expect((res) => {
+        expect(res.headers).toIncludeKey('x-auth');
+        expect(res.headers['x-auth']).toBeA('string');
         expect(res.body.email).toBe(newUser.email);
       })
       .end((err, res) => {
