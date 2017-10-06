@@ -6,38 +6,11 @@ const _ = require('lodash');
 var { app } = require('../server');
 var { Todo } = require('../models/todo');
 var { User } = require('../models/user');
-
-const testTodos = [
-  {
-    _id: new ObjectID(),
-    text: 'First test todo'
-  },
-  {
-    _id: new ObjectID(),
-    text: 'Second test todo',
-    completed: true,
-    completedAt: 333
-  }
-];
-
-const testUsers = [
-  {
-    email: 'dave@example.com',
-    password: 'password'
-  },
-  {
-    email: 'andrew@example.com',
-    password: 'password'
-  }
-];
+var { testTodos, seedTodos, testUsers, seedUsers} = require('./seed');
 
 beforeEach((done) => {
 
-  Todo.remove({})
-    .then(() => Todo.insertMany(testTodos))
-    .then(() => User.remove({}))
-    .then(() => User.insertMany(testUsers))
-    .then(() => done());
+  seedTodos().then(seedUsers).then(() => done());
 
 });
 
