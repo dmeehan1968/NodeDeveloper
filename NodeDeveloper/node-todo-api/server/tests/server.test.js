@@ -265,7 +265,7 @@ describe('POST /users', () => {
       .expect(200)
       .expect((res) => {
         expect(res.headers).toIncludeKey('x-auth');
-        expect(res.headers['x-auth']).toBeA('string');
+        expect(res.headers['x-auth']).toExist();
         expect(res.body.email).toBe(newUser.email);
       })
       .end((err, res) => {
@@ -273,9 +273,10 @@ describe('POST /users', () => {
           return done(err);
         }
 
-        User.find().then((users) => {
+        User.findOne({ email: newUser.email }).then((user) => {
 
-            expect(users.length).toBe(testUsers.length + 1);
+            expect(user).toExist();
+            expect(user.password).toNotBe(newUser.password);
             done();
 
         }).catch(done);
