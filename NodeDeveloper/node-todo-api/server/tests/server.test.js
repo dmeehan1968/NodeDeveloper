@@ -6,13 +6,11 @@ const _ = require('lodash');
 var { app } = require('../server');
 var { Todo } = require('../models/todo');
 var { User } = require('../models/user');
-var { testTodos, seedTodos, testUsers, seedUsers} = require('./seed');
 
-beforeEach((done) => {
+var { testTodos, populateTodos, testUsers, populateUsers} = require('./seed');
 
-  seedTodos().then(seedUsers).then(() => done());
-
-});
+beforeEach(populateUsers);
+beforeEach(populateTodos);
 
 describe('POST /todos', () => {
 
@@ -312,6 +310,45 @@ describe('POST /users', () => {
       })
       .end(done);
 
+  });
+
+  it('should fail if email address already in use', (done) => {
+
+      request(app)
+        .post('/users')
+        .send({ email: testUsers[0].email, password: 'password' })
+        .expect(400)
+        .end(done);
+
+  });
+
+});
+
+describe('GET /users/me', () => {
+
+  it('should return user if authenticated', (done) => {
+
+    request(app)
+      .get('/users/me')
+      .set('x-auth', testUsers[0].tokens[0].token)
+      .expect(200)
+      .expect((res) => {
+        expect(res.body._id).toBe(testUsers[0]._id.toHexString());
+        expect(res.body.email).toBe(testUsers[0].email);
+      })
+      .end(done);
+
+  });
+
+  it('should return 401 if not authenticated', (done) => {
+
+    request(app)
+      .get('/users/me')
+      .expect(401)
+      .expect((res) => {
+        expect(res.body).toEqual({});
+      })
+      .end(done);
   });
 
 });

@@ -17,9 +17,9 @@ const testTodos = [
   }
 ];
 
-var seedTodos = () => {
+const populateTodos = (done) => {
 
-  return Todo.remove({}).then(() => Todo.insertMany(testTodos))
+  Todo.remove({}).then(() => Todo.insertMany(testTodos)).then(() => done());
 
 };
 
@@ -43,12 +43,21 @@ const testUsers = [
   }
 ];
 
-var seedUsers = () => {
+const populateUsers = (done) => {
 
-  return User.remove({}).then(() => User.insertMany(testUsers))
+  User.remove({}).then(() => {
+    var users = [];
+
+    testUsers.forEach((user) => {
+      users.push(new User(user).save());
+    });
+
+    Promise.all(users).then(() => done());
+
+  });
 
 };
 
 module.exports = {
-  testUsers, seedUsers, testTodos, seedTodos
+  testUsers, populateUsers, testTodos, populateTodos
 }
