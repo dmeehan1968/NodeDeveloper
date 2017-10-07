@@ -353,3 +353,32 @@ describe('GET /users/me', () => {
   });
 
 });
+
+describe('POST /users/login', () => {
+
+  it('should login with valid email and password', (done) => {
+
+    request(app)
+      .post('/users/login')
+      .send(_.pick(testUsers[0], [ 'email', 'password' ]))
+      .expect(200)
+      .expect((res) => {
+        expect(res.body._id).toBe(testUsers[0]._id.toHexString());
+        expect(res.body.email).toBe(testUsers[0].email);
+        expect(res.headers['x-auth']).toExist();
+      })
+      .end(done);
+
+  });
+
+  it('should 400 with invalid password', (done) => {
+
+    request(app)
+      .post('/users/login')
+      .send({ email: testUsers[0].email, password: 'incorrect password' })
+      .expect(400)
+      .end(done);
+
+  });
+
+});
