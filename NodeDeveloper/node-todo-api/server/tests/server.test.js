@@ -161,17 +161,24 @@ describe('DELETE /todos/:id', () => {
       .expect(200)
       .expect((res) => {
 
-        expect(res.body.todo).toBeA('object');
+        expect(res.body.todo._id).toBe(expected._id.toHexString());
         expect(res.body.todo.text).toBe(expected.text);
+
+      })
+      .end((err, res) => {
+
+        if (err) {
+          return done(err);
+        }
 
         Todo.findById(expected._id).then((todo) =>{
 
           expect(todo).toNotExist();
+          done();
 
         }).catch(done);
 
-      })
-      .end(done);
+      });
   });
 
   it('should not delete existing todo from other user', (done) => {
@@ -182,7 +189,20 @@ describe('DELETE /todos/:id', () => {
       .delete(`/todos/${expected._id}`)
       .set('x-auth', testUsers[0].tokens[0].token)
       .expect(404)
-      .end(done);
+      .end((err, res) => {
+
+        if (err) {
+          return done (err);
+        }
+
+        Todo.findById(expected._id).then((todo) => {
+
+          expect(todo).toExist();
+          done();
+
+        }).catch(done);
+
+      });
   });
 
   it('should return 404 if todo not found', (done) => {
