@@ -265,6 +265,24 @@ describe('PATCH /todos/:id', () => {
 
   });
 
+  it('should not update the todo by another user', (done) => {
+
+    var expected = testTodos[0];
+
+    expected.text = "Updated text";
+    expected.completed = true;
+
+    var updates = _.pick(expected, [ 'text', 'completed' ]);
+
+    request(app)
+      .patch(`/todos/${expected._id}`)
+      .set('x-auth', testUsers[1].tokens[0].token)
+      .send(updates)
+      .expect(404)
+      .end(done);
+
+  });
+
   it('should clear completedAt when not completed', (done) => {
 
     var expected = testTodos[1];
