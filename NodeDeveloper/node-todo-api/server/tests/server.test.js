@@ -239,6 +239,7 @@ describe('PATCH /todos/:id', () => {
 
     request(app)
       .patch(`/todos/${expected._id}`)
+      .set('x-auth', testUsers[0].tokens[0].token)
       .send(updates)
       .expect(200)
       .expect((res) => {
@@ -250,7 +251,7 @@ describe('PATCH /todos/:id', () => {
         expect(todo.completed).toBe(expected.completed);
         expect(todo.completedAt).toBeA('number');
 
-        Todo.findById(expected._id).then((doc) =>{
+        Todo.findById(expected._id).then((doc) => {
 
           expect(doc).toExist();
           expect(doc.text).toBe(expected.text);
@@ -274,6 +275,7 @@ describe('PATCH /todos/:id', () => {
 
     request(app)
       .patch(`/todos/${expected._id}`)
+      .set('x-auth', testUsers[1].tokens[0].token)
       .send(updates)
       .expect(200)
       .expect((res) => {
