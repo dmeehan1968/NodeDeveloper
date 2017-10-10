@@ -20,7 +20,11 @@ const testUsers = [
   {
     _id: userTwoId,
     email: 'andrew@example.com',
-    password: 'userTwoPass'
+    password: 'userTwoPass',
+    tokens: [{
+      access: 'auth',
+      token: jwt.sign({ _id: userTwoId, access: 'auth' }, 'somesecret').toString()
+    }]
   }
 ];
 
