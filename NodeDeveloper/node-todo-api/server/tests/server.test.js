@@ -104,6 +104,7 @@ describe('GET /todos/:id', () => {
 
       request(app)
         .get(`/todos/${expected._id}`)
+        .set('x-auth', testUsers[0].tokens[0].token)
         .expect(200)
         .expect((res) => {
 
@@ -114,10 +115,23 @@ describe('GET /todos/:id', () => {
         .end(done);
   });
 
+  it('should not return todo doc created by other user', (done) => {
+
+      var todo = testTodos[1];  // todo 2 is not owned by user 1
+      var user = testUsers[0];
+
+      request(app)
+        .get(`/todos/${todo._id}`)
+        .set('x-auth', user.tokens[0].token)
+        .expect(404)
+        .end(done);
+  });
+
   it('should return 404 if todo not found', (done) => {
 
     request(app)
       .get(`/todos/${new ObjectID()}`)
+      .set('x-auth', testUsers[0].tokens[0].token)
       .expect(404)
       .end(done);
 
@@ -127,6 +141,7 @@ describe('GET /todos/:id', () => {
 
     request(app)
       .get('/todos/123')
+      .set('x-auth', testUsers[0].tokens[0].token)
       .expect(400)
       .end(done);
 
