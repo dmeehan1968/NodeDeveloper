@@ -151,45 +151,59 @@ describe('GET /todos/:id', () => {
 
 describe('DELETE /todos/:id', () => {
 
-    it('should delete existing todo', (done) => {
+  it('should delete existing todo', (done) => {
 
-      var expected = testTodos[0];
+    var expected = testTodos[1];
 
-      request(app)
-        .delete(`/todos/${expected._id}`)
-        .expect(200)
-        .expect((res) => {
+    request(app)
+      .delete(`/todos/${expected._id}`)
+      .set('x-auth', testUsers[1].tokens[0].token)
+      .expect(200)
+      .expect((res) => {
 
-          expect(res.body.todo).toBeA('object');
-          expect(res.body.todo.text).toBe(expected.text);
+        expect(res.body.todo).toBeA('object');
+        expect(res.body.todo.text).toBe(expected.text);
 
-          Todo.findById(expected._id).then((todo) =>{
+        Todo.findById(expected._id).then((todo) =>{
 
-            expect(todo).toNotExist();
+          expect(todo).toNotExist();
 
-          }).catch(done);
+        }).catch(done);
 
-        })
-        .end(done);
-    });
+      })
+      .end(done);
+  });
 
-    it('should return 404 if todo not found', (done) => {
+  it('should not delete existing todo from other user', (done) => {
 
-      request(app)
-        .delete(`/todos/${new ObjectID()}`)
-        .expect(404)
-        .end(done);
+    var expected = testTodos[1];
 
-    });
+    request(app)
+      .delete(`/todos/${expected._id}`)
+      .set('x-auth', testUsers[0].tokens[0].token)
+      .expect(404)
+      .end(done);
+  });
 
-    it('should return 400 if todo id not valid', (done) => {
+  it('should return 404 if todo not found', (done) => {
 
-      request(app)
-        .delete('/todos/123')
-        .expect(400)
-        .end(done);
+    request(app)
+      .delete(`/todos/${new ObjectID()}`)
+      .set('x-auth', testUsers[0].tokens[0].token)
+      .expect(404)
+      .end(done);
 
-    });
+  });
+
+  it('should return 400 if todo id not valid', (done) => {
+
+    request(app)
+      .delete('/todos/123')
+      .set('x-auth', testUsers[0].tokens[0].token)
+      .expect(400)
+      .end(done);
+
+  });
 });
 
 describe('PATCH /todos/:id', () => {

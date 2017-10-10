@@ -64,7 +64,7 @@ app.get('/todos/:id', authenticate, (req, res) => {
 
 });
 
-app.delete('/todos/:id', (req, res) => {
+app.delete('/todos/:id', authenticate, (req, res) => {
 
   var id = req.params.id;
 
@@ -72,7 +72,10 @@ app.delete('/todos/:id', (req, res) => {
     return res.status(400).send();
   }
 
-  Todo.findByIdAndRemove(id).then((todo) => {
+  Todo.findOneAndRemove({
+    _id: id,
+    _creator: req.user._id
+  }).then((todo) => {
 
     if (!todo) {
       return res.status(404).send();
