@@ -4,10 +4,10 @@ socket.on('connect', function () {
 
     console.log('Connected to server');
 
-    socket.emit('createEmail', {
-      to: 'recipient@example.com',
-      text: 'message body'
-    })
+    socket.emit('createMessage', {
+      from: 'Dave',
+      text: 'Hello All'
+    });
 
 });
 
@@ -17,8 +17,8 @@ socket.on('disconnect', function () {
 
 });
 
-socket.on('newEmail', function (email) {
+socket.on('newMessage', function (message) {
 
-  console.log('newEmail', email);
+  console.log('New message', message);
 
-});
+})
