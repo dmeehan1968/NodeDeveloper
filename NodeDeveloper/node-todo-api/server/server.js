@@ -14,18 +14,23 @@ var port = process.env.PORT || 3000;
 
 app.use(bodyParser.json());
 
-app.post('/todos', authenticate, (req, res) => {
+app.post('/todos', authenticate, async (req, res) => {
 
-  var todo = new Todo({
-    text: req.body.text,
-    _creator: req.user._id
-  });
+  try {
 
-  todo.save().then((doc) => {
+    var todo = new Todo({
+      text: req.body.text,
+      _creator: req.user._id
+    });
+
+    const doc = await todo.save();
     res.send(doc);
-  }, (e) => {
+
+  } catch(e) {
+
     res.status(400).send(e);
-  });
+
+  }
 
 });
 
