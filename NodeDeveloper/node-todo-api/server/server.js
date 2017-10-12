@@ -49,7 +49,7 @@ app.get('/todos', authenticate, async (req, res) => {
 
 });
 
-app.get('/todos/:id', authenticate, (req, res) => {
+app.get('/todos/:id', authenticate, async (req, res) => {
 
   var id = req.params.id;
 
@@ -57,18 +57,24 @@ app.get('/todos/:id', authenticate, (req, res) => {
     return res.status(400).send();
   }
 
-  Todo.findOne({
-    _id: id,
-    _creator: req.user._id
-  }).then((todo) => {
+  try {
 
-    if (!todo) {
-      return res.status(404).send();
-    }
+      const todo = await Todo.findOne({
+          _id: id,
+          _creator: req.user._id
+        });
 
-    res.status(200).send({ todo });
+      if (!todo) {
+        return res.status(404).send();
+      }
 
-  }).catch((e) => res.status(404).send());
+      res.status(200).send({ todo });
+
+  } catch(e) {
+
+    res.status(404).send();
+
+  }
 
 });
 
