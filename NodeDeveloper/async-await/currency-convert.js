@@ -19,29 +19,24 @@ const getCountries = (code) => {
 
 };
 
-const convertCurrency = (from, to, amount) => {
+const convertCurrency = async (from, to, amount) => {
 
-  let countries;
+  const countries = await getCountries(to);
+  const rate = await getExchangeRate(from, to);
+  const exchangedAmount = amount * rate;
+  return `${amount} ${from} is worth ${exchangedAmount} in ${to}. ${to} can be used in the following countries: ${countries.join(', ')}`;
 
-  return getCountries(to)
-    .then((tempCountries) => {
-      countries = tempCountries;
-      return getExchangeRate(from, to);
-    })
-    .then((rate) => {
-      const exchangedAmount = amount * rate;
-      return `${amount} ${from} is worth ${exchangedAmount} in ${to}. ${to} can be used in the following countries: ${countries.join(', ')}`;
-    });
+  // return getCountries(to)
+  //   .then((tempCountries) => {
+  //     countries = tempCountries;
+  //     return getExchangeRate(from, to);
+  //   })
+  //   .then((rate) => {
+  //     const exchangedAmount = amount * rate;
+  //     return `${amount} ${from} is worth ${exchangedAmount} in ${to}. ${to} can be used in the following countries: ${countries.join(', ')}`;
+  //   });
 };
 
-// getExchangeRate('USD', 'CAD').then((rate) => {
-//   console.log(rate);
-// });
-//
-// getCountries('USD').then((countries) => {
-//   console.log(countries);
-// });
-
-convertCurrency('USD', 'CAD', 100).then((status) => {
+convertCurrency('CAD', 'USD', 100).then((status) => {
   console.log(status);
 })
