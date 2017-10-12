@@ -34,15 +34,18 @@ app.post('/todos', authenticate, async (req, res) => {
 
 });
 
-app.get('/todos', authenticate, (req, res) => {
+app.get('/todos', authenticate, async (req, res) => {
 
-  Todo.find({
-    _creator: req.user._id
-  }).then((todos) => {
+  try {
+
+    const todos = await Todo.find({ _creator: req.user._id });
     res.send({ todos });
-  }, (e) => {
+
+  } catch(e) {
+
     res.status(400).send(e);
-  });
+
+  }
 
 });
 
