@@ -25,32 +25,42 @@ const grades = [{
   grade: 80
 }];
 
-const getUser = (id) => {
+const getUser = async (id) => {
 
-  return new Promise((resolve, reject) => {
+  const user = users.find((user) => user.id === id);
+  if (user) {
+    return user;
+  }
 
-    const user = users.find((user) => {
-      return user.id === id;
-    });
+  throw new Error(`Unable to find user with id ${id}`);
 
-    if (user) {
-      resolve(user);
-    } else {
-      reject(`Unable to find user with id: ${id}`);
-    }
-  });
+
+  // return new Promise((resolve, reject) => {
+  //
+  //   const user = users.find((user) => {
+  //     return user.id === id;
+  //   });
+  //
+  //   if (user) {
+  //     resolve(user);
+  //   } else {
+  //     reject(`Unable to find user with id: ${id}`);
+  //   }
+  // });
 
 };
 
-const getGrades = (schoolId) => {
+const getGrades = async (schoolId) => {
 
-  return new Promise((resolve, reject) => {
+  return grades.filter((grade) => grade.schoolId === schoolId);
 
-    resolve(grades.filter((grade) => {
-        return grade.schoolId === schoolId;
-    }));
-
-  });
+  // return new Promise((resolve, reject) => {
+  //
+  //   resolve(grades.filter((grade) => {
+  //       return grade.schoolId === schoolId;
+  //   }));
+  //
+  // });
 
 };
 
@@ -80,15 +90,27 @@ const getStatus = (userId) => {
 };
 
 const getStatusAlt = async (userId) => {
-  throw new Error('This is an error');
-  return 'Mike';
+
+  const user = await getUser(userId);
+  const grades = await getGrades(user.schoolId);
+
+  let average = 0;
+
+  if (grades.length > 0) {
+    average = (grades
+      .map((grade) => grade.grade)
+      .reduce((a, b) => a + b))
+      / grades.length;
+  }
+
+  return `${user.name} has an average of ${average}`;
 
 };
 
 getStatusAlt(1).then((status) => {
   console.log(status);
 }).catch((e) => {
-  console.log(e);
+  console.log(e.message);
 });
 
 
