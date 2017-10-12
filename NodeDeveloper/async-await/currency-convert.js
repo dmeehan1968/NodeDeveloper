@@ -1,21 +1,29 @@
 // http://api.fixer.io/latest?base=USD
 // https://restcountries.eu/rest/v2/currency/CAD
 
+'use strict';
+
 const axios = require('axios');
 
-const getExchangeRate = (from, to) => {
+const getExchangeRate = async (from, to) => {
 
-  return axios
-    .get(`http://api.fixer.io/latest?base=${from}`)
-    .then((res) => res.data.rates[to]);
+  const response = await axios.get(`http://api.fixer.io/latest?base=${from}`);
+  return response.data.rates[to];
+
+  // return axios
+  //   .get(`http://api.fixer.io/latest?base=${from}`)
+  //   .then((res) => res.data.rates[to]);
 
 };
 
-const getCountries = (code) => {
+const getCountries = async (code) => {
 
-  return axios
-    .get(`https://restcountries.eu/rest/v2/currency/${code}`)
-    .then((res) => res.data.map((country) => country.name));
+  const response = await axios.get(`https://restcountries.eu/rest/v2/currency/${code}`);
+  return response.data.map((country) => country.name);
+
+  // return axios
+  //   .get(`https://restcountries.eu/rest/v2/currency/${code}`)
+  //   .then((res) => res.data.map((country) => country.name));
 
 };
 
