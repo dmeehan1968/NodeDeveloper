@@ -1,10 +1,13 @@
 const {User} = require('../models/user');
 
-var authenticate = (req, res, next) => {
+var authenticate = async (req, res, next) => {
 
-  var token = req.header('x-auth');
+  try {
 
-  User.findByToken(token).then((user) => {
+    var token = req.header('x-auth');
+
+    const user = await User.findByToken(token);
+
     if (!user) {
       return Promise.reject();
     }
@@ -13,9 +16,11 @@ var authenticate = (req, res, next) => {
     req.token = token;
     next();
 
-  }).catch((e) => {
+  } catch (e) {
+
     res.status(401).send();
-  });
+
+  }
 
 };
 
