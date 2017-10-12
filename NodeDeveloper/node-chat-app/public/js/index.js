@@ -45,7 +45,9 @@ jQuery('#message-form').on('submit', function (e) {
 
 });
 
-var locationButton = jQuery('button.send-location');
+var locationButton = jQuery('#send-location');
+
+console.log(locationButton);
 
 locationButton.on('click', function () {
   if (! navigator.geolocation) {
