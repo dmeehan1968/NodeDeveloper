@@ -64,18 +64,20 @@ app.get('/todos/:id', authenticate, (req, res) => {
 
 });
 
-app.delete('/todos/:id', authenticate, (req, res) => {
+app.delete('/todos/:id', authenticate, async (req, res) => {
 
-  var id = req.params.id;
+  try {
 
-  if (!mongoose.Types.ObjectId.isValid(id)) {
-    return res.status(400).send();
-  }
+    var id = req.params.id;
 
-  Todo.findOneAndRemove({
-    _id: id,
-    _creator: req.user._id
-  }).then((todo) => {
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).send();
+    }
+
+    const todo = await Todo.findOneAndRemove({
+        _id: id,
+        _creator: req.user._id
+      });
 
     if (!todo) {
       return res.status(404).send();
@@ -83,7 +85,11 @@ app.delete('/todos/:id', authenticate, (req, res) => {
 
     res.status(200).send({ todo });
 
-  }).catch((e) => res.status(404).send());
+  } catch(e) {
+
+    res.status(404).send();
+
+  }
 
 });
 
