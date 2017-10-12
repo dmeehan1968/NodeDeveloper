@@ -142,33 +142,36 @@ app.get('/users/me', authenticate, (req, res) => {
 
 });
 
-app.delete('/users/me/token', authenticate, (req, res) => {
+app.delete('/users/me/token', authenticate, async (req, res) => {
 
-  req.user.removeToken(req.token).then(() => {
+  try {
+
+    await req.user.removeToken(req.token);
     res.status(200).send();
-  }, () => {
+
+  } catch(e) {
+
     res.status(400).send();
-  });
+
+  }
 
 });
 
-app.post('/users/login', (req, res) => {
+app.post('/users/login', async (req, res) => {
 
-  var body = _.pick(req.body, [ 'email', 'password' ]);
+  try {
 
-  User.findByCredentials(body.email, body.password).then((user) => {
+    var body = _.pick(req.body, [ 'email', 'password' ]);
+    var user = await User.findByCredentials(body.email, body.password);
+    var token = await user.generateAuthToken();
 
-      return user.generateAuthToken().then((token) => {
+    res.set('x-auth', token).send(user);
 
-        res.set('x-auth', token).send(user);
-
-      });
-
-  }).catch((e) => {
+  } catch(e) {
 
     res.status(400).send();
 
-  });
+  }
 
 });
 
