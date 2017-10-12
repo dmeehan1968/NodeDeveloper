@@ -7,12 +7,20 @@ const axios = require('axios');
 
 const getExchangeRate = async (from, to) => {
 
-  const response = await axios.get(`http://api.fixer.io/latest?base=${from}`);
-  return response.data.rates[to];
+  try {
 
-  // return axios
-  //   .get(`http://api.fixer.io/latest?base=${from}`)
-  //   .then((res) => res.data.rates[to]);
+    const response = await axios.get(`http://api.fixer.io/latest?base=${from}`);
+
+    if (!response.data.rates[to]) {
+      throw new Error(`No rate available to convert from ${from} to ${to}`);
+    }
+    return response.data.rates[to];
+
+  } catch(e) {
+
+    throw new Error(`Unable to get exchange rate for ${from} to ${to}`);
+
+  };
 
 };
 
@@ -29,11 +37,6 @@ const getCountries = async (code) => {
 
   };
 
-
-  // return axios
-  //   .get(`https://restcountries.eu/rest/v2/currency/${code}`)
-  //   .then((res) => res.data.map((country) => country.name));
-
 };
 
 const convertCurrency = async (from, to, amount) => {
@@ -43,18 +46,9 @@ const convertCurrency = async (from, to, amount) => {
   const exchangedAmount = amount * rate;
   return `${amount} ${from} is worth ${exchangedAmount} in ${to}. ${to} can be used in the following countries: ${countries.join(', ')}`;
 
-  // return getCountries(to)
-  //   .then((tempCountries) => {
-  //     countries = tempCountries;
-  //     return getExchangeRate(from, to);
-  //   })
-  //   .then((rate) => {
-  //     const exchangedAmount = amount * rate;
-  //     return `${amount} ${from} is worth ${exchangedAmount} in ${to}. ${to} can be used in the following countries: ${countries.join(', ')}`;
-  //   });
 };
 
-convertCurrency('CAD', 'MMM', 100).then((status) => {
+convertCurrency('USD', 'EUR', 100).then((status) => {
   console.log(status);
 }).catch((e) => {
   console.log(e.message);
