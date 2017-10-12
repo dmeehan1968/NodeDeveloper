@@ -18,8 +18,17 @@ const getExchangeRate = async (from, to) => {
 
 const getCountries = async (code) => {
 
-  const response = await axios.get(`https://restcountries.eu/rest/v2/currency/${code}`);
-  return response.data.map((country) => country.name);
+  try {
+
+    const response = await axios.get(`https://restcountries.eu/rest/v2/currency/${code}`);
+    return response.data.map((country) => country.name);
+
+  } catch(e) {
+
+      throw new Error(`Unable to get countries that use ${code}`);
+
+  };
+
 
   // return axios
   //   .get(`https://restcountries.eu/rest/v2/currency/${code}`)
@@ -45,6 +54,8 @@ const convertCurrency = async (from, to, amount) => {
   //   });
 };
 
-convertCurrency('CAD', 'USD', 100).then((status) => {
+convertCurrency('CAD', 'MMM', 100).then((status) => {
   console.log(status);
-})
+}).catch((e) => {
+  console.log(e.message);
+});
