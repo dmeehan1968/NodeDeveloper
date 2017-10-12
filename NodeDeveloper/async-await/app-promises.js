@@ -79,8 +79,21 @@ const getStatus = (userId) => {
 
 };
 
-getStatus(1).then((status) => {
+const getStatusAlt = async (userId) => {
+  throw new Error('This is an error');
+  return 'Mike';
+
+};
+
+getStatusAlt(1).then((status) => {
   console.log(status);
 }).catch((e) => {
   console.log(e);
 });
+
+
+// getStatus(1).then((status) => {
+//   console.log(status);
+// }).catch((e) => {
+//   console.log(e);
+// });
