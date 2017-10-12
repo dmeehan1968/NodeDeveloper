@@ -54,8 +54,33 @@ const getGrades = (schoolId) => {
 
 };
 
-getGrades(101).then((grades) => {
-  console.log(grades);
-}).catch((e) => {
+const getStatus = (userId) => {
 
+  let user;
+
+  return getUser(userId)
+  .then((tempUser) => {
+
+    return getGrades(tempUser.schoolId)
+    .then((grades) => {
+
+        user = tempUser;
+        let average = 0;
+
+        if (grades.length) {
+
+          average = grades.map((grade) => grade.grade).reduce((a, b) => a + b) / grades.length;
+
+        }
+
+        return `${user.name} has an average of ${average}`;
+    });
+  });
+
+};
+
+getStatus(1).then((status) => {
+  console.log(status);
+}).catch((e) => {
+  console.log(e);
 });
