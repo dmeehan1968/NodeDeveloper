@@ -65,10 +65,3 @@ getStatus(1).then((status) => {
 }).catch((e) => {
   console.log(e.message);
 });
-
-
-// getStatus(1).then((status) => {
-//   console.log(status);
-// }).catch((e) => {
-//   console.log(e);
-// });
