@@ -37,21 +37,6 @@ function recurseRoutes(app, folder, root) {
 
 recurseRoutes(app, path.join(__dirname, './routes'), '/');
 
-app.get('/todos', authenticate, async (req, res) => {
-
-  try {
-
-    const todos = await Todo.find({ _creator: req.user._id });
-    res.send({ todos });
-
-  } catch(e) {
-
-    res.status(400).send(e);
-
-  }
-
-});
-
 app.get('/todos/:id', authenticate, async (req, res) => {
 
   var id = req.params.id;
