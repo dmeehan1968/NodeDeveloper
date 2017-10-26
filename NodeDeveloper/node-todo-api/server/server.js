@@ -37,29 +37,6 @@ function recurseRoutes(app, folder, root) {
 
 recurseRoutes(app, path.join(__dirname, './routes'), '/');
 
-
-
-
-app.post('/todos', authenticate, async (req, res) => {
-
-  try {
-
-    var todo = new Todo({
-      text: req.body.text,
-      _creator: req.user._id
-    });
-
-    const doc = await todo.save();
-    res.send(doc);
-
-  } catch(e) {
-
-    res.status(400).send(e);
-
-  }
-
-});
-
 app.get('/todos', authenticate, async (req, res) => {
 
   try {
