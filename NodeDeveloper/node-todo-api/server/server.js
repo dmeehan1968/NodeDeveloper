@@ -3,6 +3,8 @@ require('./config/config');
 const express = require('express');
 const bodyParser = require('body-parser');
 const _ = require('lodash');
+const fs = require('fs');
+const path = require('path');
 
 var { mongoose } = require('./db/mongoose');
 var { Todo } = require('./models/todo');
@@ -14,7 +16,28 @@ var port = process.env.PORT || 3000;
 
 app.use(bodyParser.json());
 
-app.post('/users', ...require('./routes/users/post.js'));
+function recurseRoutes(app, folder, root) {
+
+console.log(folder, root);
+  var entries = fs.readdirSync(folder);
+  entries.forEach((entry) => {
+    var subpath = path.join(folder, entry);
+    var stat = fs.statSync(subpath);
+    if (stat.isDirectory()) {
+      recurseRoutes(app, subpath, path.join(root, entry));
+    } else {
+      var { name: method } = path.parse(subpath);
+      console.log('Registering Route:', method.toUpperCase(), root);
+      app[method](root, ...require(subpath));
+
+    }
+  });
+
+}
+
+recurseRoutes(app, path.join(__dirname, './routes'), '/');
+
+// app.post('/users', ...require('./routes/users/post.js'));
 
 app.post('/todos', authenticate, async (req, res) => {
 
