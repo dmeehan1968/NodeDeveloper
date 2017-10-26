@@ -14,6 +14,8 @@ var port = process.env.PORT || 3000;
 
 app.use(bodyParser.json());
 
+app.post('/users', ...require('./routes/users/post.js'));
+
 app.post('/todos', authenticate, async (req, res) => {
 
   try {
@@ -142,25 +144,6 @@ app.patch('/todos/:id', authenticate, async (req, res) => {
   } catch (e) {
 
     res.status(404).send();
-
-  }
-
-});
-
-app.post('/users', async (req, res) => {
-
-  try {
-
-    var body = _.pick(req.body, [ 'email', 'password' ]);
-    var user = new User(body);
-
-    await user.save();
-    const token = await user.generateAuthToken();
-    res.header('x-auth', token).send(user);
-
-  } catch(e) {
-
-    res.status(400).send(e);
 
   }
 
