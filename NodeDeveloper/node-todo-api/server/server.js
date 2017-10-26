@@ -37,12 +37,6 @@ function recurseRoutes(app, folder, root) {
 
 recurseRoutes(app, path.join(__dirname, './routes'), '/');
 
-app.get('/users/me', authenticate, (req, res) => {
-
-    res.send(req.user);
-
-});
-
 app.delete('/users/me/token', authenticate, async (req, res) => {
 
   try {
