@@ -18,7 +18,6 @@ app.use(bodyParser.json());
 
 function recurseRoutes(app, folder, root) {
 
-console.log(folder, root);
   var entries = fs.readdirSync(folder);
   entries.forEach((entry) => {
     var subpath = path.join(folder, entry);
@@ -28,7 +27,8 @@ console.log(folder, root);
     } else {
       var { name: method } = path.parse(subpath);
       console.log('Registering Route:', method.toUpperCase(), root);
-      app[method](root, ...require(subpath));
+      var middleware = require(subpath);
+      app[method](root, ...middleware);
 
     }
   });
@@ -37,7 +37,8 @@ console.log(folder, root);
 
 recurseRoutes(app, path.join(__dirname, './routes'), '/');
 
-// app.post('/users', ...require('./routes/users/post.js'));
+
+
 
 app.post('/todos', authenticate, async (req, res) => {
 
@@ -184,24 +185,6 @@ app.delete('/users/me/token', authenticate, async (req, res) => {
 
     await req.user.removeToken(req.token);
     res.status(200).send();
-
-  } catch(e) {
-
-    res.status(400).send();
-
-  }
-
-});
-
-app.post('/users/login', async (req, res) => {
-
-  try {
-
-    var body = _.pick(req.body, [ 'email', 'password' ]);
-    var user = await User.findByCredentials(body.email, body.password);
-    var token = await user.generateAuthToken();
-
-    res.set('x-auth', token).send(user);
 
   } catch(e) {
 
