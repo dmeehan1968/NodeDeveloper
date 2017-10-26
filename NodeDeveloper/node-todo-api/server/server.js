@@ -3,45 +3,38 @@ require('./config/config');
 const express = require('express');
 const bodyParser = require('body-parser');
 const _ = require('lodash');
-const fs = require('fs');
 const path = require('path');
+const { mongoose } = require('./db/mongoose');
 
-var { mongoose } = require('./db/mongoose');
-var { Todo } = require('./models/todo');
-var { User } = require('./models/user');
-var { authenticate } = require('./middleware/authenticate');
+const { resolveRoutes } = require('./utils/resolveRoutes');
 
 var app = express();
 var port = process.env.PORT || 3000;
 
 app.use(bodyParser.json());
 
-function recurseRoutes(app, folder, root) {
+const byUri = (a, b) => {
+  if (a.uri < b.uri) {
+    return -1;
+  }
+  if (a.uri > b.uri) {
+    return 1;
+  }
 
-  var entries = fs.readdirSync(folder);
-  entries.forEach((entry) => {
-    var subpath = path.join(folder, entry);
-    var stat = fs.statSync(subpath);
-    if (stat.isDirectory()) {
-      recurseRoutes(app, subpath, path.join(root, entry));
-    } else {
-      var { name: method } = path.parse(subpath);
-      console.log('Registering Route:', method.toUpperCase(), root);
-      var middleware = require(subpath);
-      app[method](root, ...middleware);
+  return 0;
+};
 
-    }
-  });
-
-}
-
-recurseRoutes(app, path.join(__dirname, './routes'), '/');
-
-app.listen(port, () => {
-
-  console.log(`Started on ${port}`);
-
+resolveRoutes(path.join(__dirname, 'routes'))
+.then((routes) => routes.sort(byUri))
+.then((routes) => routes.forEach((route) => {
+  console.log('Registering Route:', route.method, route.uri);
+  app[route.method.toLowerCase()](route.uri, require(route.module));
+}))
+.then(() => {
+  return new Promise((resolve, reject) => app.listen(port, resolve))
+  .then(() => console.log(`Started on ${port}`));
 });
+
 
 module.exports = {
   app
