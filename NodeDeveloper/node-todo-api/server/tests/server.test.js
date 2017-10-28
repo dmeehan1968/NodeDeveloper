@@ -14,58 +14,46 @@ beforeEach(populateTodos);
 
 describe('POST /todos', () => {
 
-  it('should create a new todo', (done) => {
+  it('should create a new todo', () => {
 
     var text = 'new test todo';
 
-    request(app)
+    return request(app)
       .post('/todos')
       .set('x-auth', testUsers[0].tokens[0].token)
       .send({ text })
       .expect(200)
-      .expect((res) => {
+      .then((res) => {
+
         expect(res.body.text).toBe(text);
-      })
-      .end((err, res) => {
+        return Todo.find();
 
-        if (err) {
-          return done(err);
-        }
+      }).then((todos) => {
 
-        Todo.find().then((todos) => {
-
-            expect(todos.length).toBe(testTodos.length + 1);
-            expect(todos[todos.length-1].text).toBe(text);
-            done();
-        }).catch((e) => done(e));
+        expect(todos.length).toBe(testTodos.length + 1);
+        expect(todos[todos.length-1].text).toBe(text);
 
       });
 
   });
 
-  it('should not create todo with invalid body data', (done) => {
+  it('should not create todo with invalid body data', () => {
 
-    request(app)
+    return request(app)
       .post('/todos')
       .set('x-auth', testUsers[0].tokens[0].token)
       .send({})
       .expect(400)
-      .expect((res) => {
+      .then((res) => {
         expect(res.body.name).toBe('ValidationError')
-      })
-      .end((err, res) => {
-        if (err) {
-          return done(err);
-        }
 
-        Todo.find().then((todos) => {
+        return Todo.find().then((todos) => {
 
           expect(todos.length).toBe(testTodos.length);
-          done();
 
-        }).catch((e) => done(e));
-
+        });
       });
+      
   });
 });
 
