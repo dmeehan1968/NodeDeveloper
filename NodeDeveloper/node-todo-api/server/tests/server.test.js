@@ -189,7 +189,7 @@ describe('DELETE /todos/:id', () => {
 
 describe('PATCH /todos/:id', () => {
 
-  it('should update the todo', (done) => {
+  it('should update the todo', () => {
 
     var expected = testTodos[0];
 
@@ -198,12 +198,12 @@ describe('PATCH /todos/:id', () => {
 
     var updates = _.pick(expected, [ 'text', 'completed' ]);
 
-    request(app)
+    return request(app)
       .patch(`/todos/${expected._id}`)
       .set('x-auth', testUsers[0].tokens[0].token)
       .send(updates)
       .expect(200)
-      .expect((res) => {
+      .then((res) => {
 
         var todo = res.body.todo;
 
@@ -212,21 +212,20 @@ describe('PATCH /todos/:id', () => {
         expect(todo.completed).toBe(expected.completed);
         expect(typeof todo.completedAt).toBe('number');
 
-        Todo.findById(expected._id).then((doc) => {
+        return Todo.findById(expected._id).then((doc) => {
 
           expect(doc).toBeTruthy();
           expect(doc.text).toBe(expected.text);
           expect(doc.completed).toBe(expected.completed);
           expect(doc.completedAt).toBe(todo.completedAt);
 
-        }).catch(done);
+        });
 
-      })
-      .end(done);
+      });
 
   });
 
-  it('should not update the todo by another user', (done) => {
+  it('should not update the todo by another user', () => {
 
     var expected = testTodos[0];
 
@@ -235,16 +234,15 @@ describe('PATCH /todos/:id', () => {
 
     var updates = _.pick(expected, [ 'text', 'completed' ]);
 
-    request(app)
+    return request(app)
       .patch(`/todos/${expected._id}`)
       .set('x-auth', testUsers[1].tokens[0].token)
       .send(updates)
-      .expect(404)
-      .end(done);
+      .expect(404);
 
   });
 
-  it('should clear completedAt when not completed', (done) => {
+  it('should clear completedAt when not completed', () => {
 
     var expected = testTodos[1];
 
@@ -252,12 +250,12 @@ describe('PATCH /todos/:id', () => {
 
     var updates = _.pick(expected, [ 'completed' ]);
 
-    request(app)
+    return request(app)
       .patch(`/todos/${expected._id}`)
       .set('x-auth', testUsers[1].tokens[0].token)
       .send(updates)
       .expect(200)
-      .expect((res) => {
+      .then((res) => {
 
         var todo = res.body.todo;
 
@@ -266,18 +264,16 @@ describe('PATCH /todos/:id', () => {
         expect(todo.completed).toBe(expected.completed);
         expect(todo.completedAt).toBeFalsy();
 
-        Todo.findById(expected._id).then((doc) =>{
+        return Todo.findById(expected._id).then((doc) =>{
 
           expect(doc).toBeTruthy();
           expect(doc.text).toBe(expected.text);
           expect(doc.completed).toBe(expected.completed);
           expect(doc.completedAt).toBeFalsy();
 
-        }).catch(done);
+        });
 
-      })
-      .end(done);
-
+      });
 
   });
 
