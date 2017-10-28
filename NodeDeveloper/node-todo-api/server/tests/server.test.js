@@ -53,34 +53,25 @@ describe('POST /todos', () => {
 
         });
       });
-      
+
   });
 });
 
 describe('GET /todos', () => {
 
-    it('should get all todos', (done) => {
+  it('should get all todos', () => {
 
-        request(app)
-          .get('/todos')
-          .set('x-auth', testUsers[0].tokens[0].token)
-          .expect(200)
-          .expect((res) => {
+    return request(app)
+      .get('/todos')
+      .set('x-auth', testUsers[0].tokens[0].token)
+      .expect(200)
+      .then((res) => {
 
-            expect(res.body.todos.length).toBe(1);
+        expect(res.body.todos.length).toBe(1);
 
-          })
-          .end((err, res) => {
+      });
 
-              if (err) {
-                return done(err);
-              }
-
-              done();
-
-          });
-
-    });
+  });
 
 });
 
