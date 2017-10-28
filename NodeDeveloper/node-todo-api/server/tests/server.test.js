@@ -77,52 +77,48 @@ describe('GET /todos', () => {
 
 describe('GET /todos/:id', () => {
 
-  it('should return todo doc', (done) => {
+  it('should return todo doc', () => {
 
       var expected = testTodos[0];
 
-      request(app)
+      return request(app)
         .get(`/todos/${expected._id}`)
         .set('x-auth', testUsers[0].tokens[0].token)
         .expect(200)
-        .expect((res) => {
+        .then((res) => {
 
           expect(res.body.todo._id).toBe(expected._id.toHexString());
           expect(res.body.todo.text).toBe(expected.text);
 
-        })
-        .end(done);
+        });
   });
 
-  it('should not return todo doc created by other user', (done) => {
+  it('should not return todo doc created by other user', () => {
 
       var todo = testTodos[1];  // todo 2 is not owned by user 1
       var user = testUsers[0];
 
-      request(app)
+      return request(app)
         .get(`/todos/${todo._id}`)
         .set('x-auth', user.tokens[0].token)
-        .expect(404)
-        .end(done);
+        .expect(404);
   });
 
-  it('should return 404 if todo not found', (done) => {
+  it('should return 404 if todo not found', () => {
 
-    request(app)
+    return request(app)
       .get(`/todos/${new ObjectID()}`)
       .set('x-auth', testUsers[0].tokens[0].token)
-      .expect(404)
-      .end(done);
+      .expect(404);
 
   });
 
-  it('should return 400 if todo id not valid', (done) => {
+  it('should return 400 if todo id not valid', () => {
 
-    request(app)
+    return request(app)
       .get('/todos/123')
       .set('x-auth', testUsers[0].tokens[0].token)
-      .expect(400)
-      .end(done);
+      .expect(400);
 
   });
 
