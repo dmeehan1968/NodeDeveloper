@@ -372,25 +372,20 @@ describe('GET /users/me', () => {
 
 describe('POST /users/login', () => {
 
-  it('should login with valid email and password', (done) => {
+  it('should login with valid email and password', () => {
 
     var expected = testUsers[1];
 
-    request(app)
+    return request(app)
       .post('/users/login')
       .send(_.pick(expected, [ 'email', 'password' ]))
       .expect(200)
-      .expect((res) => {
+      .then((res) => {
         expect(res.body._id).toBe(expected._id.toHexString());
         expect(res.body.email).toBe(expected.email);
         expect(res.headers['x-auth']).toBeTruthy();
-      })
-      .end((err, res) => {
-        if (err) {
-          return done(err);
-        }
 
-        User.findById(expected._id).then((user) => {
+        return User.findById(expected._id).then((user) => {
 
           expect(user).toBeTruthy();
 
@@ -398,34 +393,29 @@ describe('POST /users/login', () => {
             access: 'auth',
             token: res.header['x-auth']
           });
-          done();
 
-        }).catch(done);
+        });
+
       });
 
   });
 
-  it('should 400 with invalid password', (done) => {
+  it('should 400 with invalid password', () => {
 
     var expected = testUsers[1];
 
-    request(app)
+    return request(app)
       .post('/users/login')
       .send({ email: expected.email, password: 'incorrect password' })
       .expect(400)
-      .expect((res) => {
+      .then((res) => {
         expect(res.headers['x-auth']).toBeFalsy();
-      })
-      .end((err, res) => {
-        if (err) {
-          return done(err);
-        }
 
-        User.findById(expected._id).then((user) => {
+        return User.findById(expected._id).then((user) => {
+
             expect(user.tokens.length).toBe(1);
-            done();
-        }).catch(done);
 
+        });
       });
 
   });
