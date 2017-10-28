@@ -126,77 +126,63 @@ describe('GET /todos/:id', () => {
 
 describe('DELETE /todos/:id', () => {
 
-  it('should delete existing todo', (done) => {
+  it('should delete existing todo', () => {
 
     var expected = testTodos[1];
 
-    request(app)
+    return request(app)
       .delete(`/todos/${expected._id}`)
       .set('x-auth', testUsers[1].tokens[0].token)
       .expect(200)
-      .expect((res) => {
+      .then((res) => {
 
         expect(res.body.todo._id).toBe(expected._id.toHexString());
         expect(res.body.todo.text).toBe(expected.text);
 
-      })
-      .end((err, res) => {
-
-        if (err) {
-          return done(err);
-        }
-
-        Todo.findById(expected._id).then((todo) =>{
+        return Todo.findById(expected._id).then((todo) =>{
 
           expect(todo).toBeFalsy();
-          done();
 
-        }).catch(done);
+        });
 
       });
+
   });
 
-  it('should not delete existing todo from other user', (done) => {
+  it('should not delete existing todo from other user', () => {
 
     var expected = testTodos[1];
 
-    request(app)
+    return request(app)
       .delete(`/todos/${expected._id}`)
       .set('x-auth', testUsers[0].tokens[0].token)
       .expect(404)
-      .end((err, res) => {
+      .then((res) => {
 
-        if (err) {
-          return done (err);
-        }
-
-        Todo.findById(expected._id).then((todo) => {
+        return Todo.findById(expected._id).then((todo) => {
 
           expect(todo).toBeTruthy();
-          done();
 
-        }).catch(done);
+        });
 
       });
   });
 
-  it('should return 404 if todo not found', (done) => {
+  it('should return 404 if todo not found', () => {
 
-    request(app)
+    return request(app)
       .delete(`/todos/${new ObjectID()}`)
       .set('x-auth', testUsers[0].tokens[0].token)
-      .expect(404)
-      .end(done);
+      .expect(404);
 
   });
 
-  it('should return 400 if todo id not valid', (done) => {
+  it('should return 400 if todo id not valid', () => {
 
-    request(app)
+    return request(app)
       .delete('/todos/123')
       .set('x-auth', testUsers[0].tokens[0].token)
-      .expect(400)
-      .end(done);
+      .expect(400);
 
   });
 });
