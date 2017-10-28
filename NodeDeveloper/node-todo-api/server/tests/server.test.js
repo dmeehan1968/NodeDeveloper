@@ -281,73 +281,63 @@ describe('PATCH /todos/:id', () => {
 
 describe('POST /users', () => {
 
-  it('should create a new user', (done) => {
+  it('should create a new user', () => {
 
     var newUser = {
       email: 'newuser@example.com',
       password: 'password'
     };
 
-    request(app)
+    return request(app)
       .post('/users')
       .send(newUser)
       .expect(200)
-      .expect((res) => {
+      .then((res) => {
         expect(typeof res.headers['x-auth']).toBe('string');
         expect(res.body.email).toBe(newUser.email);
-      })
-      .end((err, res) => {
-        if (err) {
-          return done(err);
-        }
 
-        User.findOne({ email: newUser.email }).then((user) => {
+        return User.findOne({ email: newUser.email }).then((user) => {
 
             expect(user).toBeTruthy();
             expect(user.password).not.toBe(newUser.password);
-            done();
 
-        }).catch(done);
-
+        });
       });
 
   });
 
-  it('should fail with 400 if invalid email address', (done) => {
+  it('should fail with 400 if invalid email address', () => {
 
-    request(app)
+    return request(app)
       .post('/users')
       .send({ email: 'garbage', password: 'password' })
       .expect(400)
-      .expect((res) => {
+      .then((res) => {
         expect(res.body.name).toBe('ValidationError');
         expect(res.body.errors).toHaveProperty('email')
-      })
-      .end(done);
+      });
 
   });
 
-  it('should fail with 400 if password too short', (done) => {
+  it('should fail with 400 if password too short', () => {
 
-    request(app)
+    return request(app)
       .post('/users')
       .send({ email: 'newuser@example.com', password: 'pass' })
       .expect(400)
-      .expect((res) => {
+      .then((res) => {
         expect(res.body.name).toBe('ValidationError');
         expect(res.body.errors).toHaveProperty('password')
-      })
-      .end(done);
+      });
 
   });
 
-  it('should fail if email address already in use', (done) => {
+  it('should fail if email address already in use', () => {
 
-      request(app)
+      return request(app)
         .post('/users')
         .send({ email: testUsers[0].email, password: 'password' })
-        .expect(400)
-        .end(done);
+        .expect(400);
 
   });
 
