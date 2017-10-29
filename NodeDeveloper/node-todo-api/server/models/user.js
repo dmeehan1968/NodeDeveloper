@@ -120,14 +120,11 @@ UserSchema.pre('save', function (next) {
 
   if (user.isModified('password')) {
 
-    bcrypt.genSalt(parseInt(process.env.SALT_ROUNDS) || 10, (err, salt) => {
+    const rounds = parseInt(process.env.SALT_ROUNDS) || 10;
 
-        bcrypt.hash(user.password, salt, (err, hash) => {
-
-          user.password = hash;
-          next();
-
-        });
+    bcrypt.hash(user.password, rounds, (err, hash) => {
+      user.password = hash;
+      next();
     });
 
   } else {
