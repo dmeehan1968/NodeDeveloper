@@ -9,7 +9,7 @@ var authenticate = async (req, res, next) => {
     const user = await User.findByToken(token);
 
     if (!user) {
-      return Promise.reject();
+      throw new Error('Invalid token');
     }
 
     req.user = user;
