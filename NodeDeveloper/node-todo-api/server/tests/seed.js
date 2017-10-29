@@ -31,14 +31,7 @@ const testUsers = [
 const populateUsers = (done) => {
 
   User.remove({}).then(() => {
-    var users = [];
-
-    testUsers.forEach((user) => {
-      users.push(new User(user).save());
-    });
-
-    Promise.all(users).then(() => done());
-
+    Promise.all(testUsers.map((user) => new User(user).save())).then(() => done());
   });
 
 };
