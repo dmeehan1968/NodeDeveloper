@@ -9,7 +9,7 @@ const { mongoose } = require('./db/mongoose');
 const { resolveRoutes } = require('./utils/resolveRoutes');
 
 var app = express();
-var port = process.env.PORT || 3000;
+var port = parseInt(process.env.PORT) || 3000;
 
 app.use(bodyParser.json());
 
