@@ -25,16 +25,13 @@ const byUri = (a, b) => {
 };
 
 resolveRoutes(path.join(__dirname, 'routes'))
-.then((routes) => routes.sort(byUri))
-.then((routes) => routes.forEach((route) => {
+.sort(byUri)
+.forEach((route) => {
   console.log('Registering Route:', route.method, route.uri);
   app[route.method.toLowerCase()](route.uri, require(route.module));
-}))
-.then(() => {
-  return new Promise((resolve, reject) => app.listen(port, resolve))
-  .then(() => console.log(`Started on ${port}`));
-});
+})
 
+app.listen(port, () => console.log(`Started on ${port}`));
 
 module.exports = {
   app

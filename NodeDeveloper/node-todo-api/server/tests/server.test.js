@@ -45,6 +45,7 @@ describe('POST /todos', () => {
       .send({})
       .expect(400)
       .then((res) => {
+
         expect(res.body.name).toBe('ValidationError')
 
         return Todo.find().then((todos) => {
